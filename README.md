@@ -27,24 +27,27 @@ Personal Claude Code setup — config, skills, and tooling based on the "thin ha
 
 ## New machine setup
 
+**1. Clone and run setup**
 ```bash
 git clone https://github.com/hakuyuyu/claude-sensai.git ~/claude-sensai
 cd ~/claude-sensai && chmod +x setup.sh && ./setup.sh
 ```
 
-Then add to `~/.zshrc`:
+This copies config files to `~/.claude/`, installs gstack skills, gbrain, and the claude-mem plugin.
+
+**2. Add API keys to `~/.zshrc`**
 ```bash
 export ANTHROPIC_API_KEY="sk-ant-..."
 export OPENAI_API_KEY="sk-proj-..."   # for gbrain embeddings
 ```
 
-Then install optional formatters:
+**3. Install optional formatters** (hooks will use them if present)
 ```bash
 brew install ruff
 npm install -g prettier
 ```
 
-Restart Claude Code.
+**4. Restart Claude Code** — required for the gbrain MCP server and claude-mem plugin to load.
 
 ## Keeping in sync
 

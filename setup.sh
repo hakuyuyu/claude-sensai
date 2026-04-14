@@ -37,7 +37,12 @@ cd ~/gbrain && bun install && bun link
 gbrain init
 echo "  ✓ gbrain installed"
 
-# ── 5. API keys reminder ──────────────────────────────────────
+# ── 5. Install claude-mem plugin ─────────────────────────────
+echo "Installing claude-mem plugin..."
+claude plugin install claude-mem@thedotmack --scope user
+echo "  ✓ claude-mem installed"
+
+# ── 6. API keys reminder ──────────────────────────────────────
 echo ""
 echo "=== Action required ==="
 echo "Add these to ~/.zshrc if not already set:"
