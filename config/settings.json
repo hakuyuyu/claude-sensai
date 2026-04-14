@@ -1,0 +1,127 @@
+{
+  "model": "sonnet",
+  "env": {
+    "MAX_THINKING_TOKENS": "10000",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "haiku"
+  },
+  "permissions": {
+    "allow": [
+      "Read(**)",
+      "Write(**)",
+      "Edit(**)",
+      "Glob(**)",
+      "Grep(**)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(touch:*)",
+      "Bash(echo:*)",
+      "Bash(pwd:*)",
+      "Bash(which:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git stash:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(npx:*)",
+      "Bash(node:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(pip:*)",
+      "Bash(pip3:*)",
+      "Bash(brew install:*)",
+      "Bash(brew list:*)",
+      "Bash(open:*)",
+      "Bash(curl:*)",
+      "Bash(grep:*)",
+      "Bash(sed:*)",
+      "Bash(awk:*)",
+      "Bash(wc:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "WebFetch(domain:boards-api.greenhouse.io)",
+      "WebFetch(domain:job-boards.greenhouse.io)",
+      "WebFetch(domain:boards.greenhouse.io)",
+      "WebFetch(domain:jobs.ashbyhq.com)",
+      "WebFetch(domain:jobs.lever.co)",
+      "WebFetch(domain:apply.workable.com)",
+      "WebFetch(domain:waymo.com)",
+      "WebFetch(domain:jobs.jobvite.com)",
+      "WebFetch(domain:api.greenhouse.io)",
+      "WebFetch(domain:grnh.se)",
+      "WebFetch(domain:lever.co)",
+      "WebFetch(domain:greenhouse.io)",
+      "WebFetch(domain:ashbyhq.com)",
+      "WebFetch(domain:workable.com)",
+      "WebFetch(domain:smartrecruiters.com)",
+      "WebFetch(domain:careers.anthropic.com)",
+      "WebFetch(domain:openai.com)",
+      "WebFetch(domain:deepmind.google)",
+      "WebFetch(domain:careers.google.com)",
+      "WebFetch(domain:amazon.jobs)",
+      "WebFetch(domain:jobs.microsoft.com)",
+      "WebFetch(domain:careers.microsoft.com)",
+      "WebFetch(domain:databricks.com)",
+      "WebFetch(domain:huggingface.co)",
+      "WebFetch(domain:cohere.com)",
+      "WebFetch(domain:mistral.ai)",
+      "WebSearch(*)"
+    ],
+    "deny": [
+      "Bash(rm:*)",
+      "Bash(rmdir:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git push --force:*)",
+      "Bash(git clean:*)",
+      "Edit(.env*)",
+      "Write(.env*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"\nimport json, sys, os\ndata = json.load(sys.stdin)\ntool = data.get('tool_name', '')\nparams = data.get('tool_input', {})\nfile_path = params.get('file_path', '')\nif '.env' in os.path.basename(file_path) and not file_path.endswith('.env.example'):\n    print(f'BLOCKED: Refusing to edit {file_path} (.env files are protected)')\n    sys.exit(2)\nsys.exit(0)\n\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"\nimport json, sys, os, subprocess\ndata = json.load(sys.stdin)\nparams = data.get('tool_input', {})\nfile_path = params.get('file_path', '')\nif not file_path or not os.path.exists(file_path):\n    sys.exit(0)\next = os.path.splitext(file_path)[1]\nif ext in ('.ts', '.tsx', '.js', '.jsx', '.json'):\n    result = subprocess.run(['which', 'prettier'], capture_output=True)\n    if result.returncode == 0:\n        subprocess.run(['prettier', '--write', '--log-level', 'silent', file_path])\nelif ext == '.py':\n    result = subprocess.run(['which', 'ruff'], capture_output=True)\n    if result.returncode == 0:\n        subprocess.run(['ruff', 'format', '--quiet', file_path])\nsys.exit(0)\n\""
+          }
+        ]
+      }
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": ["gbrain"],
+  "enabledPlugins": {
+    "superpowers@superpowers-marketplace": true,
+    "claude-mem@thedotmack": true
+  },
+  "extraKnownMarketplaces": {
+    "thedotmack": {
+      "source": {
+        "source": "github",
+        "repo": "thedotmack/claude-mem"
+      }
+    }
+  },
+  "skipDangerousModePermissionPrompt": true
+}

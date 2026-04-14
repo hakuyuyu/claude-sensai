@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "gbrain": {
+      "command": "/Users/amandli/.bun/bin/gbrain",
+      "args": ["serve"],
+      "env": {
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}"
+      }
+    }
+  }
+}
