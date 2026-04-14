@@ -7,9 +7,18 @@ Personal Claude Code setup — config, skills, and tooling based on the "thin ha
 | File | Purpose |
 |------|---------|
 | `config/CLAUDE.md` | Global instructions — who I am, code style, response style, codify-everything rule |
-| `config/settings.json` | Claude Code settings — model, hooks (auto-format, .env protection), permissions, plugins |
+| `config/settings.json` | Token optimization, permissions, hooks (auto-format + .env guard) |
 | `config/.mcp.json` | MCP servers — gbrain knowledge base |
 | `setup.sh` | One-command install for a new machine |
+
+## Key settings applied
+
+- **`model: sonnet`** — default model
+- **`MAX_THINKING_TOKENS: 10000`** — caps hidden reasoning tokens (~60-70% cost reduction)
+- **`CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: 50`** — compacts context at 50% instead of 95%
+- **`CLAUDE_CODE_SUBAGENT_MODEL: haiku`** — subagents use haiku by default
+- **`claude-mem` plugin** — cross-session persistent memory
+- **Hooks** — auto-runs `prettier`/`ruff` after edits; blocks writes to `.env` files
 
 ## Skills installed by setup
 
@@ -27,6 +36,12 @@ Then add to `~/.zshrc`:
 ```bash
 export ANTHROPIC_API_KEY="sk-ant-..."
 export OPENAI_API_KEY="sk-proj-..."   # for gbrain embeddings
+```
+
+Then install optional formatters:
+```bash
+brew install ruff
+npm install -g prettier
 ```
 
 Restart Claude Code.
@@ -49,3 +64,7 @@ Follows the [thin harness, fat skills](https://www.garrytan.com/p/thin-harness-f
 - **Resolver**: skill descriptions auto-match intent — no need to memorize commands
 - **Memory**: `claude-mem` plugin for cross-session persistence
 - **Diarization**: gbrain reads and synthesizes knowledge into structured profiles
+
+## Inspired by
+
+[everything-claude-code](https://github.com/affaan-m/everything-claude-code)
