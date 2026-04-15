@@ -14,11 +14,17 @@ fi
 
 # ── 2. Copy config files ──────────────────────────────────────
 echo "Copying Claude config files..."
-mkdir -p ~/.claude
+mkdir -p ~/.claude/hooks
 cp "$REPO_DIR/config/CLAUDE.md"     ~/.claude/CLAUDE.md
 cp "$REPO_DIR/config/settings.json" ~/.claude/settings.json
 cp "$REPO_DIR/config/.mcp.json"     ~/.claude/.mcp.json
 echo "  ✓ CLAUDE.md, settings.json, .mcp.json"
+
+# ── 2b. Install session hooks ─────────────────────────────────
+echo "Installing session hooks..."
+cp "$REPO_DIR/hooks/"*.py ~/.claude/hooks/
+chmod +x ~/.claude/hooks/*.py
+echo "  ✓ session_start.py, session_end.py"
 
 # ── 3. Install gstack skills ──────────────────────────────────
 echo "Installing gstack..."
